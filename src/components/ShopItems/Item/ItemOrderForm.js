@@ -1,4 +1,4 @@
-import { Button, TextField, Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useRef, useState } from "react";
 
@@ -40,7 +40,9 @@ const ItemOrderForm = (props) => {
           defaultValue: "1",
         }}
       />
-      <Button variant="contained" type="submit">+ Add</Button>
+      <Button variant="contained" type="submit">
+        + Add
+      </Button>
       {!amountIsValid && <Typography>Please enter a valid number</Typography>}
     </Box>
   );

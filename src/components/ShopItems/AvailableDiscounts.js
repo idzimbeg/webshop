@@ -1,64 +1,56 @@
-import { useEffect, useState } from "react";
+import { useState, useContext } from "react";
 
-import Card from "../UI/Card";
+import CardDisplay from "../UI/CardDisplay";
+import CartContext from "../../store/cart-context";
+
 import { Checkbox, FormControl, Box } from "@mui/material";
 
-const AvailableDiscounts = (props) => {
-  const [discounts, setDiscounts] = useState([]);
+const AvailableDiscounts = ({ discounts, setDiscounts }) => {
+  const cartCtx = useContext(CartContext);
   const [checked, setChecked] = useState([true, false]);
 
-  const handleChange = (event) => {
+  const checkedCount = Object.keys(checked).filter(
+    (key) => checked[key]
+  ).length;
+  const disabled = checkedCount > 1;
+  const hasItems = cartCtx.items.length > 0;
+
+  const handleChange = (event, discountName) => {
+    const newDiscounts = discounts.map((discount) => {
+      if (discount.name === discountName) {
+        return {
+          ...discount,
+          checked: event.target.checked,
+        };
+      }
+      return discount;
+    });
+    setDiscounts(newDiscounts);
     setChecked([event.target.checked, event.target.checked]);
-    // return props.onDiscount()
   };
 
-  useEffect(() => {
-    const fetchDiscounts = async () => {
-      const response = await fetch(
-        "https://webshop-33388-default-rtdb.europe-west1.firebasedatabase.app/discounts.json"
-      );
-
-      if (!response.ok) {
-        throw new Error("Something went wrong");
-      }
-
-      const responseData = await response.json();
-
-      const loadedDiscounts = [];
-
-      for (const key in responseData) {
-        loadedDiscounts.push({
-          id: key,
-          name: responseData[key].name,
-          amount: responseData[key].amount,
-        });
-      }
-      setDiscounts(loadedDiscounts);
-    };
-    fetchDiscounts().catch((error) => {});
-  }, []);
-
   const discountList = discounts.map((discount) => (
-    <FormControl >
+    <FormControl>
       <p>{discount.name}</p>
       <Checkbox
         key={discount.id}
         id={discount.id}
         amount={discount.amount}
-        // checked={checked[0] && checked[1]}
-        // indeterminate={checked[0] !== checked[1]}
-        onChange={handleChange}
-      // onClick={props.onDiscount}
+        checked={discount.checked}
+        disabled={(discount.checked && !discount.name.includes("%")) || disabled}
+        onChange={(ev) => handleChange(ev, discount.name)}
       />
     </FormControl>
   ));
   return (
     <section>
-      <Card>
-        <Box sx={{ display: "flex", flexFlow: "row" }}>
-          <ul>{discountList}</ul>
-        </Box>
-      </Card>
+      {hasItems && (
+        <CardDisplay>
+          <Box sx={{ display: "flex", flexFlow: "row" }}>
+            <ul>{discountList}</ul>
+          </Box>
+        </CardDisplay>
+      )}
     </section>
   );
 };

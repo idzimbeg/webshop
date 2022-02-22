@@ -14,7 +14,13 @@ import {
 
 const Item = (props) => {
   const cartCtx = useContext(CartContext);
-  const price = `$${props.price.toFixed(2)}`;
+  const price = `${props.price.toFixed(2)}€`;
+  const promoprice = (promotion) => {
+    cartCtx.promoPrice({
+      promotion: promotion,
+      promoprice: props.promoprice,
+    });
+  };
   const theme = createTheme();
 
   const AddToCartHandler = (amount) => {
@@ -23,6 +29,8 @@ const Item = (props) => {
       name: props.name,
       amount: amount,
       price: props.price,
+      discount: props.discount,
+      promoprice: props.promoprice
     });
   };
 
@@ -40,6 +48,14 @@ const Item = (props) => {
             <CardContent sx={{ flexGrow: 1 }}>
               <Typography gutterBottom variant="h5" component="h2">
                 {props.name}
+              </Typography>
+              {promoprice.length > 0 ? (
+                <Typography gutterBottom variant="h5" component="h2">
+                  {`${props.promoprice}`}
+                </Typography>
+              ) : null}
+              <Typography gutterBottom variant="h5" component="h2">
+                {props.discount}
               </Typography>
               <Typography gutterBottom variant="h5" component="h2">
                 {price}

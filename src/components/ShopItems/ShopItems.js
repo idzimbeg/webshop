@@ -1,14 +1,14 @@
-import { Fragment } from "react";
+import React from "react";
 
 import ItemsSummary from "./ItemsSummary";
 import AvailableItems from "./AvailableItems";
 
 const ShopItems = () => {
   return (
-    <Fragment>
+    <>
       <ItemsSummary />
       <AvailableItems />
-    </Fragment>
+    </>
   );
 };
 
